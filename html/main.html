@@ -19,7 +19,12 @@
 </div>
 <div>
 	<p>3. Upload .ZIP file...</p>	
-</div>
+	<form enctype="multipart/form-data" action="./handlezip" method="POST">
+		Choose a file to upload: <input name="file" type="file" /><br />
+		<input type="submit" value="Upload Selected File" accept=".zip"/>
+	</form>
+
+	</div>
 </body>
 
 </html>
