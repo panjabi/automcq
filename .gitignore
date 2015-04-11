@@ -1,4 +1,22 @@
+# Ignore all
+*
+ 
+# Unignore all with extensions
+!*.*
+ 
+# Unignore all dirs
+!*/
+
+# Ignore particular file and dirs 
+/src/imageproc/*
+!/src/imageproc/main.cpp
+!/src/imageproc/CMakeLists.txt
+
+# file extensions to ignore
+
 *.cdr
 *.pdf
 *.json
 *.docx
+
+# exact folder to be ignored
