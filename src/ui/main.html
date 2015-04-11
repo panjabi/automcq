@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>	
+	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.18.1/build/cssreset/cssreset-min.css">
+	<link href='http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:700' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Roboto:700,400' rel='stylesheet' type='text/css'>
+</head>
+
+<body>
+	<style type="text/css">
+
+		body, button, input {
+		    text-align: center;
+		    font-family: 'Roboto', sans-serif;
+		    font-size: 100%;
+		}
+		p {
+			font-weight: bold;
+			margin: 15px;
+		}
+		h1 {
+		    font-size: 500%;
+		    font-family: 'Yanone Kaffeesatz', sans-serif;
+		}
+		.button {
+			border-width: 1px;
+			border-radius: 8px;
+			border-color: #000;
+			background-color: #ffffff;
+			width: 50%;
+			height: 40px;
+			margin: 5px;
+		}
+	</style>
+
+	<div>
+		<h1>AutoMCQ</h1>
+	</div>
+	<div>
+		<p>Step 1. Learn how to use it...</p>
+		<iframe width="50%" height="315" src="https://www.youtube.com/embed/LFGmC8m0kIo?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+	</div>
+	<div>
+		<p>Step 2. Download template...</p>
+		<button class = "button" type = "button" onclick = "location.href='./downloadtemplate'">
+		Download MCQ Template
+		</button>
+	</div>
+	<div>
+		<p>Step 3. Upload .zip file...</p>	
+		<form enctype="multipart/form-data" action="./handlezip" method="POST">
+			    <input id="select" class="button" type="file" name="file" accept=".zip" />
+			    <input id="submit" class="button" type="submit" value="Upload Selected File" disabled />
+		</form>
+	</div>
+	<script type="text/javascript">
+		var select = document.getElementById("select");
+		var submit = document.getElementById("submit");
+		select.onchange = function(){
+
+	        var fileExtension = "";
+	        if (select.value.lastIndexOf(".") > 0) {
+	            fileExtension = select.value.substring(select.value.lastIndexOf(".") + 1, select.value.length);
+	        }
+	        if (fileExtension == "zip") {
+				submit.removeAttribute("disabled");
+	        }
+	        else {
+	            alert("You must select a ZIP file for upload");	            
+	        }
+		};
+	</script>
+</body>
+</html>
