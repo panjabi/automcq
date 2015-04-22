@@ -48,7 +48,7 @@
 	</div>
 	<div>
 		<p>Step 3. Upload .zip file...</p>	
-		<form enctype="multipart/form-data" action="./handlezip" method="POST">
+		<form id="sendZip" enctype="multipart/form-data" action="./handlezip" method="POST">
 			    <input id="select" class="button" type="file" name="file" accept=".zip" />
 			    <input id="submit" class="button" type="submit" value="Upload Selected File" disabled />
 		</form>
@@ -56,7 +56,7 @@
 	<script type="text/javascript">
 		var select = document.getElementById("select");
 		var submit = document.getElementById("submit");
-		select.onchange = function(){
+		select.onchange = function() {
 
 	        var fileExtension = "";
 	        if (select.value.lastIndexOf(".") > 0) {
@@ -69,6 +69,11 @@
 	            alert("You must select a ZIP file for upload");	            
 	        }
 		};
+
+		submit.onclick = function() {
+			sendZip.setAttribute("disabled", true);
+		};
+
 	</script>
 </body>
 </html>

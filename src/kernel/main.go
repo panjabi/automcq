@@ -1,6 +1,7 @@
 package main
 
 import (
+	"archive/zip"
 	"fmt"
 	"html/template"
 	"io"
@@ -10,7 +11,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"archive/zip"
+	"strings"
 )
 
 // mainpage of the website
@@ -111,17 +112,24 @@ func handleZip(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// binary kernel
-	cmd := exec.Command("./main")
-	err = cmd.Run()
-	if err != nil {
-		fmt.Println(err.Error())
-	}
+	// extracting names of files in folder
+    files, _ := ioutil.ReadDir(tmpDir)
+    for _, file := range files {
+
+	    // add other extensions by using or condition
+	    if strings.Contains(file.Name(),".jpg") {
+    		// binary kernel
+			cmd := exec.Command("./main", "photo")
+			err = cmd.Run()
+			if err != nil {
+				fmt.Println(err.Error())
+			}
+	    }
+    }
 
 	os.RemoveAll(tmpDir)
 
 	// respond with .zip file with results(.csv) in it
-
 }
 
 // rendering HTML page
