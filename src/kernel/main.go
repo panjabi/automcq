@@ -94,8 +94,12 @@ func handleZip(resp http.ResponseWriter, req *http.Request) {
 		http.Error(resp, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	part, _ := reader.NextPart()
-
+	part, err := reader.NextPart()
+	if err != nil {
+		log.Println("Can not read uploaded file" + err.Error())
+		return
+	}
+	
 	tmpDir,_ := ioutil.TempDir(".","")
 	fmt.Println(tmpDir)
 	dst,_ := os.Create(filepath.Join(tmpDir, part.FileName()))
@@ -115,7 +119,7 @@ func handleZip(resp http.ResponseWriter, req *http.Request) {
 	// extracting names of files in folder
     files, _ := ioutil.ReadDir(tmpDir)
     for _, file := range files {
-
+    	fmt.Println(file)
 	    // add other extensions by using or condition
 	    if strings.Contains(file.Name(),".jpg") {
     		// binary kernel

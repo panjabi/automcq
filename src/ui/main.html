@@ -12,66 +12,85 @@
 		body, button, input {
 		    text-align: center;
 		    font-family: 'Roboto', sans-serif;
-		    font-size: 100%;
+		    font-size: 20px;
 		}
 		p {
 			font-weight: bold;
 			margin: 15px;
 		}
 		h1 {
-		    font-size: 500%;
+		    font-size: 400%;
 		    font-family: 'Yanone Kaffeesatz', sans-serif;
 		}
 		.button {
-			border-width: 1px;
+			border-width: 0px;
 			border-radius: 8px;
 			border-color: #000;
-			background-color: #ffffff;
-			width: 50%;
-			height: 40px;
-			margin: 5px;
+			background-color: #888888;
+			min-width: 20%;
+			color: #000;
+			padding: 6px 12px;
+			cursor: pointer;
 		}
+		/* This is copied from https://github.com/blueimp/jQuery-File-Upload/blob/master/css/jquery.fileupload.css */
+		 .fileinput-button {
+		    position: relative;
+		    overflow: hidden;
+		}
+		/*Also*/
+		 .fileinput-button input {
+		    position: absolute;
+		    top: 0;
+		    right: 0;
+		    margin: 0;
+		    opacity: 0;
+		    -ms-filter:'alpha(opacity=0)';
+		    direction: ltr;
+		    cursor: pointer;
+		}
+
+		button, form {
+			font-size: 17px;
+		}
+
 	</style>
 
 	<div>
 		<h1>AutoMCQ</h1>
 	</div>
 	<div>
-		<p>Step 1. Learn how to use it...</p>
+		<p> Learn how to use it...</p>
 		<iframe width="50%" height="315" src="https://www.youtube.com/embed/LFGmC8m0kIo?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
 	</div>
 	<div>
-		<p>Step 2. Download template...</p>
+		<br>
 		<button class = "button" type = "button" onclick = "location.href='./downloadtemplate'">
 		Download MCQ Template
 		</button>
 	</div>
 	<div>
-		<p>Step 3. Upload .zip file...</p>	
-		<form id="sendZip" enctype="multipart/form-data" action="./handlezip" method="POST">
-			    <input id="select" class="button" type="file" name="file" accept=".zip" />
-			    <input id="submit" class="button" type="submit" value="Upload Selected File" disabled />
+		<br>
+		<form id="submit" method="POST" action="./handlezip" enctype="multipart/form-data"> <span class="button fileinput-button">
+        	<span class="button">Select and Upload the .zip file</span>
+
+    		<input id="select" type="file" name="file" accept=".zip"/>
 		</form>
 	</div>
-	<script type="text/javascript">
-		var select = document.getElementById("select");
-		var submit = document.getElementById("submit");
-		select.onchange = function() {
 
+	<script type="text/javascript">
+
+		var submit = document.getElementById("submit");
+		submit.onchange = function() {
 	        var fileExtension = "";
 	        if (select.value.lastIndexOf(".") > 0) {
 	            fileExtension = select.value.substring(select.value.lastIndexOf(".") + 1, select.value.length);
 	        }
 	        if (fileExtension == "zip") {
-				submit.removeAttribute("disabled");
+				submit.submit();
 	        }
 	        else {
 	            alert("You must select a ZIP file for upload");	            
 	        }
-		};
-
-		submit.onclick = function() {
-			sendZip.setAttribute("disabled", true);
 		};
 
 	</script>
