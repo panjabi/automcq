@@ -13,7 +13,9 @@
 !/src/imageproc/CMakeLists.txt
 
 # file extensions to ignore
-
+*.jpeg
+*.png
+*.jpg
 *.cdr
 *.pdf
 *.json
