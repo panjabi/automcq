@@ -21,7 +21,7 @@ func mainpage(resp http.ResponseWriter, req *http.Request) {
 
 // endpoint to download mcq template
 func downloadTemplate(resp http.ResponseWriter, req *http.Request) {
-	data, err := ioutil.ReadFile("../../assets/mcqtemplate.jpg")
+	data, err := ioutil.ReadFile("../../assets/template.jpg")
 	if err != nil {
 		log.Println("could not read mcq tamplate: " + err.Error())
 		return
