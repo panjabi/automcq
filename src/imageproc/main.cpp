@@ -92,6 +92,40 @@ Mat definePtns ( int numQues, int numOpts, int numQuesRow, int centerX, int cent
   return optsPtns;
 }
 
+short isOptMarked(Vec2s optCenter, Mat& image, int radius) {
+  
+  float X = 0.0;
+  float Y = 0.0;
+  float effRadius = radius - 0.5;
+  unsigned int counter = 0;
+  unsigned int sum = 0;
+  unsigned int threshold = 80;
+  short isMarked = 0;
+
+  for (int j = optCenter[1]-radius+1; j <= optCenter[1]+radius ; ++j)
+  {
+    for (int i = optCenter[0]-radius+1; i <= optCenter[0]+radius; ++i)
+    { 
+      X = i - (optCenter[0] + 0.5);
+      Y = j - (optCenter[1] + 0.5);
+
+      if ((X*X) + (Y*Y) <= (effRadius*effRadius))
+      {
+        counter = counter + 1;
+        sum = sum + image.at<uchar>(j,i);
+      } 
+    }
+  }
+
+  if (sum/counter < threshold)
+  {
+    isMarked = 1;
+    std::cout << isMarked <<"\n" << sum/counter << "\n";
+  }
+
+  return isMarked;
+}
+
 Mat readOpts( Mat image ) {
   
   // define constants
@@ -104,15 +138,21 @@ Mat readOpts( Mat image ) {
 
   int centerX = 221;
   int centerY = 176;
-  int radius = 11;
+  int optRadius = 10;
 
-  Mat opts( numQues, numOpts, CV_8UC1, 0 );
+  Mat opts( numQues, numOpts, CV_8SC1);
   Mat optsPtns = definePtns( numQues, numOpts, numQuesRow, centerX, centerY, distRow, distCol, distOpts );
 
-  std::cout << optsPtns.at<Vec2s>(0,0) << "\n"; 
-  std::cout << optsPtns.at<Vec2s>(59,4) << "\n"; 
+  for (int i = 0; i < optsPtns.rows; ++i)
+  {
+    for (int j = 0; j < optsPtns.cols; ++j)
+    {
+      Vec2s optCenter = optsPtns.at<Vec2s>(i,j);
+      opts.at<short>(i,j) = isOptMarked(optCenter, image, optRadius);
+    }
+  }
   
-  return optsPtns;
+  return opts;
 }
 
 // Main function
