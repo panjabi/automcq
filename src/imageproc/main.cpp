@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include <iostream>
+#include <math.h>
 #include <opencv2/opencv.hpp>
 #include "opencv2/nonfree/nonfree.hpp"
 
 using namespace cv;
 
 // Returns aligned image
-Mat alignImage( Mat image) {
+Mat alignImage( Mat image ) {
 
   Mat org = imread( "template-blank.jpg", CV_LOAD_IMAGE_GRAYSCALE );
   if(!org.data) std::cout << "unable to read template image";
@@ -72,6 +73,7 @@ Mat alignImage( Mat image) {
   return org;
 }
 
+// Define the positions of options/ rollnumber
 Mat definePtns ( int numQues, int numOpts, int numQuesRow, int centerX, int centerY, int distRow, int distCol, int distOpts ) {
 
   Mat optsPtns( numQues, numOpts, CV_16UC2 );
@@ -85,14 +87,15 @@ Mat definePtns ( int numQues, int numOpts, int numQuesRow, int centerX, int cent
     {
       colNum = i/numQuesRow;
       rowNum = i%numQuesRow;
-      optsPtns.at<Vec2s>(i,j)[0] = 221 + (182*colNum) + (28*j);
-      optsPtns.at<Vec2s>(i,j)[1] = 176 + (42*rowNum);
+      optsPtns.at<Vec2s>(i,j)[0] = centerX + (distCol*colNum) + (distOpts*j);
+      optsPtns.at<Vec2s>(i,j)[1] = centerY + (distRow*rowNum);
     }
   }
   return optsPtns;
 }
 
-short isOptMarked(Vec2s optCenter, Mat& image, int radius) {
+// If a given option is marked
+short isOptMarked( Vec2s optCenter, Mat& image, int radius ) {
   
   float X = 0.0;
   float Y = 0.0;
@@ -120,13 +123,13 @@ short isOptMarked(Vec2s optCenter, Mat& image, int radius) {
   if (sum/counter < threshold)
   {
     isMarked = 1;
-    std::cout << isMarked <<"\n" << sum/counter << "\n";
   }
 
   return isMarked;
 }
 
-Mat readOpts( Mat image ) {
+// Reads the marked answer options
+Mat readOpts( Mat& image ) {
   
   // define constants
   int numQues = 60;
@@ -138,7 +141,7 @@ Mat readOpts( Mat image ) {
 
   int centerX = 221;
   int centerY = 176;
-  int optRadius = 10;
+  int radius = 10;
 
   Mat opts( numQues, numOpts, CV_8SC1);
   Mat optsPtns = definePtns( numQues, numOpts, numQuesRow, centerX, centerY, distRow, distCol, distOpts );
@@ -148,11 +151,43 @@ Mat readOpts( Mat image ) {
     for (int j = 0; j < optsPtns.cols; ++j)
     {
       Vec2s optCenter = optsPtns.at<Vec2s>(i,j);
-      opts.at<short>(i,j) = isOptMarked(optCenter, image, optRadius);
+      opts.at<short>(i,j) = isOptMarked(optCenter, image, radius);
     }
   }
-  
+
   return opts;
+}
+
+// Read the roll number bubbles
+int readRoll( Mat& image ) {
+
+  // define constants
+  int numDgts = 10;
+  int numUnts = 5;
+  int distUnts = 31;
+  int distRow = 28;
+
+  int centerX = 19;
+  int centerY = 204;
+  int radius = 11;
+
+  int rollNo = 0;
+  Mat rollPtns = definePtns( numDgts, numUnts, numDgts, centerX, centerY, distRow, 0, distUnts );
+
+  for (int j = 0; j < rollPtns.cols; ++j)
+  {
+    for (int i = 0; i < rollPtns.rows; ++i)
+    {
+      Vec2s optCenter = rollPtns.at<Vec2s>(i,j);
+      if( isOptMarked(optCenter, image, radius) == 1 )
+      {
+        rollNo += i * pow( 10, rollPtns.cols-1-j );
+        continue;
+      }
+    }
+  }
+
+  return rollNo;
 }
 
 // Main function
@@ -164,5 +199,7 @@ int main(int argc, char** argv) {
   Mat imageAligned = alignImage( image );
 
   Mat markedOpts = readOpts( imageAligned );
+  int rollNo = readRoll( imageAligned );
 
+  std::cout << rollNo << "\n";
 }
